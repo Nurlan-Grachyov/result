@@ -1,147 +1,60 @@
-import os
-from datetime import datetime
-from pathlib import Path
+from datetime import datetime, timedelta
 
-import openpyxl
-import requests
-from dotenv import load_dotenv
-
-date = datetime.now()
-str_date = date.strftime("%Y-%m-%d %H:%M:%S")
+import pandas as pd
 
 
-def main(func_date):
-    path_to_project = Path(__file__).resolve().parent.parent
-    path_to_file = path_to_project / "data" / "operations.xlsx"
+from src.utils import path_to_file, read_file, greeting, number_cards, top_transactions, currency, stock_prices, to_file
 
-    workbook = openpyxl.load_workbook(path_to_file)
-    sheet = workbook.active
-    headers = [cell.value for cell in sheet[1]]
+# date = datetime.now()
+# end_date = date.strftime("%Y-%m-%d %H:%M:%S")
+# begin_month = end_date[5:7]
+# begin_year = end_date[:4]
+# begin_date = datetime(int(begin_year), int(begin_month), 1)
+begin_date = datetime(2020, 5, 25, 15, 46, 57)
+str_begin_date = datetime.strftime(begin_date, "%d-%m-%Y %H:%M:%S")
 
-    transactions = []
-    for row in sheet.iter_rows(min_row=2, values_only=True):
-        row_data = dict(zip(headers, row))
-        transactions.append(
-            {
-                "Дата операции": row_data["Дата операции"],
-                "Дата платежа": row_data["Дата платежа"],
-                "Номер карты": row_data["Номер карты"],
-                "Статус": row_data["Статус"],
-                "Сумма операции": row_data["Сумма операции"],
-                "Валюта операции": row_data["Валюта операции"],
-                "Сумма платежа": row_data["Сумма платежа"],
-                "Валюта платежа": row_data["Валюта платежа"],
-                "Кэшбэк": row_data["Кэшбэк"],
-                "Категория": row_data["Категория"],
-                "MCC": row_data["MCC"],
-                "Описание": row_data["Описание"],
-                "Бонусы (включая кэшбэк)": row_data["Бонусы (включая кэшбэк)"],
-                "Округление на инвесткопилку": row_data["Округление на инвесткопилку"],
-                "Сумма операции с округлением": row_data["Сумма операции с округлением"],
-            }
-        )
-        if len(transactions) == 100:
-            break
 
-    # print(transactions)
-    def greeting():
-        hour = func_date[11:13]
-        info = {}
-        if 4 <= int(hour) < 12:
-            info["greeting"] = "Доброе утро"
-            return info
-        elif 12 <= int(hour) < 18:
-            info["greeting"] = "Добрый день"
-            return info
-        elif 18 <= int(hour) < 22:
-            info["greeting"] = "Добрый вечер"
-            return info
-        else:
-            info["greeting"] = "Доброй ночи"
-            return info
+def get_operations() -> pd.DataFrame:
 
-    # print(greeting())
+    df = pd.read_excel(path_to_file)
 
-    def cards(trans, info):
-        info["cards"] = []
-        print(info)
-        for transaction in trans:
-            if transaction.get("Номер карты") is not None:
-                last_digits = transaction.get("Номер карты")[1:]
-                if not any(card["last_digits"] == last_digits for card in info["cards"]):
-                    info["cards"].append({"last_digits": last_digits, "total_spent": 0, "cashback": 0})
-                for card in info["cards"]:
-                    if card["last_digits"] == last_digits:
-                        if "-" in str(transaction["Сумма платежа"]):
-                            amount = str(transaction["Сумма платежа"])[1:]
-                            cash_back = float(amount) / 100
-                        else:
-                            continue
-                        card["total_spent"] += float(amount)
-                        card["cashback"] += cash_back
-        return info
+    datetime_fields_to_convert = {
+        "Дата операции": "%d.%m.%Y %H:%M:%S",
+        "Дата платежа": "%d.%m.%Y",
+    }
+    for datetime_field, str_format in datetime_fields_to_convert.items():
+        df[datetime_field] = pd.to_datetime(df[datetime_field], format=str_format)
 
-    cards(transactions, greeting())
-    cards = cards(transactions, greeting())
-    # print(cards)
+    return df
 
-    def top_transactions(trans, info):
-        top = sorted(trans, key=lambda x: x["Сумма операции"])[:5]
-        info["top_transactions"] = []
-        for trans in top:
-            info["top_transactions"].append(
-                {
-                    "date": trans["Дата платежа"],
-                    "amount": trans["Сумма операции"],
-                    "category": trans["Категория"],
-                    "description": trans["Описание"],
-                }
-            )
-        return info
 
-    top_transactions(transactions, cards)
-    top_transactions = top_transactions(transactions, cards)
-    # print(top_transactions)
+def filter_operations_by_date(df: pd.DataFrame, date: str):
+    dt = datetime.strptime(date, "%d-%m-%Y %H:%M:%S")
+    start_date = pd.to_datetime(dt.replace(day=1))
+    end_date = pd.to_datetime(dt + timedelta(days=1))
+    return df.loc[(df["Дата операции"] >= start_date) & (df["Дата операции"] < end_date)]
 
-    def currency(trans, info):
 
-        # load_dotenv()
-        # access_key = os.getenv("access_key")
-        #
-        # headers_curr = {"apikey": access_key}
-        # url_usd = f"https://api.apilayer.com/exchangerates_data/latest?symbols=RUB&base=USD"
-        #
-        # result_usd = requests.get(url_usd, headers=headers_curr)
-        # new_amount_usd = result_usd.json()
-        #
-        # url_eur = f"https://api.apilayer.com/exchangerates_data/latest?symbols=RUB&base=EUR"
-        # result_eur = requests.get(url_eur, headers=headers_curr)
-        # new_amount_eur = result_eur.json()
+def main(analysis_date):
+    df = get_operations()
+    df = filter_operations_by_date(df, analysis_date)
 
-        info["currency_rates"] = []
+    read_file(df)
+    greeting()
+    number_cards(read_file(df),greeting())
+    top_transactions(read_file(df), number_cards(read_file(df),greeting()))
+    currency(top_transactions(read_file(df), number_cards(read_file(df),greeting())))
+    stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df),greeting()))))
+    # print(to_file(stock_prices(currency(top_transactions(number_cards(read_file(df),greeting()))))))
+    print(to_file(stock_prices(currency(top_transactions))))
 
-        #     info['currency_rates'].append({
-        #   "currency": "USD",
-        #   "rate": new_amount_usd['rates']['RUB']
-        # })
-        #
-        #     info['currency_rates'].append({
-        #         "currency": "EUR",
-        #         "rate": new_amount_eur['rates']['RUB']
-        #     })
+main(str_begin_date)
 
-        info["currency_rates"].append({"currency": "USD", "rate": 95.676332})
-
-        info["currency_rates"].append({"currency": "EUR", "rate": 104.753149})
-        return info
-
-    currency(transactions, top_transactions)
-    currency = currency(transactions, top_transactions)
-    # print(currency)
-    
-
-    def stock_prices(trans, info):
-        pass
-
-    stock_prices(transactions, currency)
-main(str_date)
+# if __name__ == '__main__':
+#     main(str_begin_date)
+#
+#     number_cards(read_file, greeting)
+#     top_transactions(read_file, number_cards)
+#     currency(top_transactions)
+#     stock_prices(read_file, currency)
+#     to_file(stock_prices)
