@@ -3,7 +3,7 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
-
+import http.client
 import openpyxl
 import requests
 from dotenv import load_dotenv
@@ -152,7 +152,6 @@ def currency(info):
         #     })
 
         info["currency_rates"].append({"currency": "USD", "rate": 95.676332})
-
         info["currency_rates"].append({"currency": "EUR", "rate": 104.753149})
         return info
     except Exception as e:
@@ -161,65 +160,59 @@ def currency(info):
 
 
 def stock_prices(info):
-    import http.client
+    # try:
+        logger.info("Good stocks")
+        conn = http.client.HTTPSConnection("real-time-finance-data.p.rapidapi.com")
 
-    conn = http.client.HTTPSConnection("real-time-finance-data.p.rapidapi.com")
+        headers = {
+            "x-rapidapi-key": "39ac2ff51amshbf14c0ab2c03d5cp1bb809jsnc4631bcad964",
+            "x-rapidapi-host": "real-time-finance-data.p.rapidapi.com",
+        }
 
-    headers = {
-        "x-rapidapi-key": "39ac2ff51amshbf14c0ab2c03d5cp1bb809jsnc4631bcad964",
-        "x-rapidapi-host": "real-time-finance-data.p.rapidapi.com",
-    }
+        conn.request("GET", "/market-trends?trend_type=MARKET_INDEXES&country=us&language=en", headers=headers)
 
-    conn.request("GET", "/market-trends?trend_type=MARKET_INDEXES&country=us&language=en", headers=headers)
+        res = conn.getresponse()
+        data = res.read()
+        data_json = json.loads(data.decode("utf-8"))
+        print(data_json)
 
-    res = conn.getresponse()
-    data = res.read()
-    data_json = json.loads(data.decode("utf-8"))
+        info["stock_prices"] = []
 
-    info["stock_prices"] = []
+        for trend in data_json["data"]["trends"]:
+            info["stock_prices"].append({"stock": trend["name"], "price": trend["price"]})
 
-    for trend in data_json["data"]["trends"]:
-        info["stock_prices"].append({"stock": trend["name"], "price": trend["price"]})
-
-    return info
-
+        return info
+    # except Exception as e:
+    #     logger.error('Everybody has problems with foreign stocks.')
+    #     print(f'We have a problem with stocks, Watson: {e}')
 
 def to_file(info):
-    info_to_file = {}
-    info_to_file["user_currencies"] = []
-    info_to_file["user_stocks"] = []
+    try:
+        logger.info("Write to file")
+        if info is None:
+            logger.error('Info is None')
+            return
 
-    for currency_info in info["currency_rates"]:
-        info_to_file["user_currencies"].append(currency_info["currency"])
+        info_to_file = {}
+        info_to_file["user_currencies"] = []
+        info_to_file["user_stocks"] = []
 
-    for stock_info in info["stock_prices"]:
-        info_to_file["user_stocks"].append(stock_info["stock"])
+        if "currency_rates" in info:
+            for currency_info in info["currency_rates"]:
+                info_to_file["user_currencies"].append(currency_info["currency"])
 
-    path_to_project = Path(__file__).resolve().parent.parent
-    path_to_file = path_to_project / "data" / "user_settings.json"
-    with open(path_to_file, "w", encoding="UTF-8") as f:
-        json.dump(info_to_file, f, ensure_ascii=False)
+        if "stock_prices" in info:
+            for stock_info in info["stock_prices"]:
+                info_to_file["user_stocks"].append(stock_info["stock"])
 
-    return info
+        path_to_project = Path(__file__).resolve().parent.parent
+        path_to_file = path_to_project / "data" / "user_settings.json"
+        with open(path_to_file, "w", encoding="UTF-8") as f:
+            json.dump(info_to_file, f, ensure_ascii=False)
+
+        return info
+    except Exception as e:
+        logger.error('Problems with recording to file.')
+        print(f'We have a problem with recording to file, Watson: {e}')
 
 
-# if __name__ == "__main__":
-    # read_file_utils = read_file(path_to_file)
-    # # print(read_file)
-    #
-    # greeting_utils = greeting()
-    # # print(greeting)
-    #
-    # cards_utils = cards(read_file_utils, greeting_utils)
-    # # print(cards)
-    #
-    # top_transactions_utils = top_transactions(read_file_utils, cards_utils)
-    # # print(top_transactions)
-    #
-    # currency_utils = currency(top_transactions_utils)
-    # # print(currency)
-    #
-    # stock_prices_utils = stock_prices(read_file_utils, currency_utils)
-    # print(stock_prices_utils)
-    #
-    # to_file_utils = to_file(stock_prices_utils)
