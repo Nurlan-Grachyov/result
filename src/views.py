@@ -3,13 +3,18 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 
-from src.utils import path_to_file, read_file, greeting, number_cards, top_transactions, currency, stock_prices, to_file
+from src.utils import (
+    path_to_file,
+    read_file,
+    greeting,
+    number_cards,
+    top_transactions,
+    currency,
+    stock_prices,
+    to_file,
+)
 
-# date = datetime.now()
-# end_date = date.strftime("%Y-%m-%d %H:%M:%S")
-# begin_month = end_date[5:7]
-# begin_year = end_date[:4]
-# begin_date = datetime(int(begin_year), int(begin_month), 1)
+
 begin_date = datetime(2020, 5, 25, 15, 46, 57)
 str_begin_date = datetime.strftime(begin_date, "%d-%m-%Y %H:%M:%S")
 
@@ -38,7 +43,11 @@ def filter_operations_by_date(df: pd.DataFrame, date: str):
 def main(analysis_date):
     df = get_operations()
     df = filter_operations_by_date(df, analysis_date)
+    return df
 
+main(str_begin_date)
+
+if __name__ == '__main__':
     # read_file(df)
     # greeting()
     # number_cards(read_file(df),greeting())
@@ -46,16 +55,5 @@ def main(analysis_date):
     # currency(top_transactions(read_file(df), number_cards(read_file(df),greeting())))
     # stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df),greeting()))))
     # print(to_file(stock_prices(currency(top_transactions(number_cards(read_file(df), greeting()))))))
-    print(to_file(stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df), greeting()))))))
-    print(to_file(stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df), greeting()))))))
-
-main(str_begin_date)
-
-# if __name__ == '__main__':
-#     main(str_begin_date)
-#
-#     number_cards(read_file, greeting)
-#     top_transactions(read_file, number_cards)
-#     currency(top_transactions)
-#     stock_prices(currency)
-#     to_file(stock_prices)
+    print(to_file(stock_prices(currency(top_transactions(read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting()))))))
+    # print(to_file(stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df), greeting()))))))

@@ -23,7 +23,7 @@ def read_file(file):
     transactions = []
     headers = file.columns.tolist()
     try:
-        logger.info('We have an adequate list of dictionaries')
+        logger.info("We have an adequate list of dictionaries")
         for index, row in file.iterrows():
             row_data = row.to_dict()
             transactions.append(
@@ -49,13 +49,13 @@ def read_file(file):
                 break
         return transactions
     except Exception as e:
-        logger.error('What do you want, bitch?!')
-        print(f'We have a problem with a reading file, Watson: {e}')
+        logger.error("What do you want, bitch?!")
+        print(f"We have a problem with a reading file, Watson: {e}")
+
 
 def greeting():
     try:
         logger.info("Say 'hello'")
-        logging.info('')
         date = datetime.now()
         str_date = date.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -74,8 +74,9 @@ def greeting():
             info["greeting"] = "Доброй ночи"
             return info
     except Exception as e:
-        logger.error('You can`t say hello, bitch?!')
-        print(f'We have a problem with a reading file, Watson: {e}')
+        logger.error("You can`t say hello, bitch?!")
+        print(f"We have a problem with a reading file, Watson: {e}")
+
 
 def number_cards(trans, info):
     try:
@@ -100,8 +101,9 @@ def number_cards(trans, info):
                             card["cashback"] += cash_back
         return info
     except Exception as e:
-        logger.error('Fucking numbers oc cards')
-        print(f'We have a problem with getting of numbers card, Watson: {e}')
+        logger.error("Fucking numbers oc cards")
+        print(f"We have a problem with getting of numbers card, Watson: {e}")
+
 
 def top_transactions(trans, info):
     try:
@@ -119,8 +121,8 @@ def top_transactions(trans, info):
             )
         return info
     except Exception as e:
-        logger.error('You poor fuck...')
-        print(f'We have a problem with top transactions, Watson: {e}')
+        logger.error("You poor fuck...")
+        print(f"We have a problem with top transactions, Watson: {e}")
 
 
 def currency(info):
@@ -155,42 +157,45 @@ def currency(info):
         info["currency_rates"].append({"currency": "EUR", "rate": 104.753149})
         return info
     except Exception as e:
-        logger.error('Everybody has problems with currency now...')
-        print(f'We have a problem with currency, Watson: {e}')
+        logger.error("Everybody has problems with currency now...")
+        print(f"We have a problem with currency, Watson: {e}")
 
 
 def stock_prices(info):
     # try:
-        logger.info("Good stocks")
-        conn = http.client.HTTPSConnection("real-time-finance-data.p.rapidapi.com")
+    logger.info("Good stocks")
+    conn = http.client.HTTPSConnection("real-time-finance-data.p.rapidapi.com")
 
-        headers = {
-            "x-rapidapi-key": "39ac2ff51amshbf14c0ab2c03d5cp1bb809jsnc4631bcad964",
-            "x-rapidapi-host": "real-time-finance-data.p.rapidapi.com",
-        }
+    headers = {
+        "x-rapidapi-key": "39ac2ff51amshbf14c0ab2c03d5cp1bb809jsnc4631bcad964",
+        "x-rapidapi-host": "real-time-finance-data.p.rapidapi.com",
+    }
 
-        conn.request("GET", "/market-trends?trend_type=MARKET_INDEXES&country=us&language=en", headers=headers)
+    conn.request("GET", "/market-trends?trend_type=MARKET_INDEXES&country=us&language=en", headers=headers)
 
-        res = conn.getresponse()
-        data = res.read()
-        data_json = json.loads(data.decode("utf-8"))
-        print(data_json)
+    res = conn.getresponse()
+    data = res.read()
+    data_json = json.loads(data.decode("utf-8"))
+    print(data_json)
 
-        info["stock_prices"] = []
+    info["stock_prices"] = []
 
-        for trend in data_json["data"]["trends"]:
-            info["stock_prices"].append({"stock": trend["name"], "price": trend["price"]})
+    for trend in data_json["data"]["trends"]:
+        info["stock_prices"].append({"stock": trend["name"], "price": trend["price"]})
 
-        return info
-    # except Exception as e:
-    #     logger.error('Everybody has problems with foreign stocks.')
-    #     print(f'We have a problem with stocks, Watson: {e}')
+    return info
+
+
+# except Exception as e:
+#     logger.error('Everybody has problems with foreign stocks.')
+#     print(f'We have a problem with stocks, Watson: {e}')
+
 
 def to_file(info):
     try:
         logger.info("Write to file")
         if info is None:
-            logger.error('Info is None')
+            logger.error("Info is None")
             return
 
         info_to_file = {}
@@ -206,13 +211,11 @@ def to_file(info):
                 info_to_file["user_stocks"].append(stock_info["stock"])
 
         path_to_project = Path(__file__).resolve().parent.parent
-        path_to_file = path_to_project / "data" / "user_settings.json"
+        path_to_file = path_to_project / "user_settings.json"
         with open(path_to_file, "w", encoding="UTF-8") as f:
             json.dump(info_to_file, f, ensure_ascii=False)
 
         return info
     except Exception as e:
-        logger.error('Problems with recording to file.')
-        print(f'We have a problem with recording to file, Watson: {e}')
-
-
+        logger.error("Problems with recording to file.")
+        print(f"We have a problem with recording to file, Watson: {e}")
