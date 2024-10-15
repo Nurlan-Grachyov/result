@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 import openpyxl
 
@@ -20,7 +20,7 @@ sheet = workbook.active
 headers = [cell.value for cell in sheet[1]]
 transactions = []
 try:
-    logger.info('Создали список словарей')
+    logger.info("Создали список словарей")
     for row in sheet.iter_rows(min_row=2, values_only=True):
         row_data = dict(zip(headers, row))
         transactions.append(
@@ -45,8 +45,8 @@ try:
         if len(transactions) == 1500:
             break
 except Exception as e:
-    logger.error(f'Ошибка с созданием списка словарей: {e}.')
-    print(f'Ошибка с созданием списка словарей: {e}.')
+    logger.error(f"Ошибка с созданием списка словарей: {e}.")
+    print(f"Ошибка с созданием списка словарей: {e}.")
 
 date_obj = datetime(2021, 5, 6)
 str_date = datetime.strftime(date_obj, "%Y-%m")
@@ -54,7 +54,7 @@ str_date = datetime.strftime(date_obj, "%Y-%m")
 
 def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: int) -> float:
     try:
-        logger.info('Кругленькая сумма получилась...')
+        logger.info("Кругленькая сумма получилась...")
         counter = 0
         for i in list_transactions:
             if i["Дата платежа"] is None:
@@ -77,7 +77,9 @@ def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: 
         counter = str(counter)[1:]
         return float(counter)
     except Exception as e:
-        logger.error(f'Ничего ты не сэкономил: {e}.')
-        print(f'Ничего ты не сэкономил: {e}.')
+        logger.error(f"Ничего ты не сэкономил: {e}.")
+        print(f"Ничего ты не сэкономил: {e}.")
 
-print(investment_bank(str_date, transactions, 50))
+
+if __name__ == "__main__":
+    print(investment_bank(str_date, transactions, 50))

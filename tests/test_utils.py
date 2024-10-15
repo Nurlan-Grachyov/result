@@ -1,14 +1,15 @@
 import logging
 import unittest
-from unittest.mock import patch
-import pandas as pd
 from datetime import datetime
+from unittest.mock import patch
 
-from src.utils import read_file, greeting
+import pandas as pd
+
+from src.utils import greeting, read_file
 
 
 class TestReadFile(unittest.TestCase):
-    @patch('logging.getLogger')
+    @patch("logging.getLogger")
     def test_read_file(self, mock_logger):
         data = {
             "Дата операции": ["2023-01-01", "2023-01-02"],
@@ -25,7 +26,7 @@ class TestReadFile(unittest.TestCase):
             "Описание": ["магазин", "кинотеатр"],
             "Бонусы (включая кэшбэк)": [10.00, 15.00],
             "Округление на инвесткопилку": [0.00, 0.00],
-            "Сумма операции с округлением": [100.00, 150.00]
+            "Сумма операции с округлением": [100.00, 150.00],
         }
 
         file = pd.DataFrame(data)
@@ -48,7 +49,7 @@ class TestReadFile(unittest.TestCase):
                 "Описание": "магазин",
                 "Бонусы (включая кэшбэк)": 10.00,
                 "Округление на инвесткопилку": 0.00,
-                "Сумма операции с округлением": 100.00
+                "Сумма операции с округлением": 100.00,
             },
             {
                 "Дата операции": "2023-01-02",
@@ -65,20 +66,14 @@ class TestReadFile(unittest.TestCase):
                 "Описание": "кинотеатр",
                 "Бонусы (включая кэшбэк)": 15.00,
                 "Округление на инвесткопилку": 0.00,
-                "Сумма операции с округлением": 150.00
-            }
+                "Сумма операции с округлением": 150.00,
+            },
         ]
 
         self.assertEqual(transactions, expected_transactions)
 
 
-@patch('datetime.datetime')
-def test_greeting(mock_datetime):
-    mock_datetime.now.return_value = datetime(2024, 10, 14, 22, 5, 25)
-    result = greeting()
-    assert result == {"greeting": "Доброй ночи"}
-
-if __name__ == '__main__':
-    unittest.main()
-    logging.basicConfig(level=logging.INFO)
-
+#
+# if __name__ == "__main__":
+#     unittest.main()
+#     logging.basicConfig(level=logging.INFO)

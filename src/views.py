@@ -2,18 +2,16 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
-
 from src.utils import (
-    path_to_file,
-    read_file,
+    currency,
     greeting,
     number_cards,
-    top_transactions,
-    currency,
+    path_to_file,
+    read_file,
     stock_prices,
     to_file,
+    top_transactions,
 )
-
 
 begin_date = datetime(2020, 5, 25, 15, 46, 57)
 str_begin_date = datetime.strftime(begin_date, "%d-%m-%Y %H:%M:%S")
@@ -45,9 +43,10 @@ def main(analysis_date):
     df = filter_operations_by_date(df, analysis_date)
     return df
 
+
 main(str_begin_date)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # read_file(df)
     # greeting()
     # number_cards(read_file(df),greeting())
@@ -55,5 +54,15 @@ if __name__ == '__main__':
     # currency(top_transactions(read_file(df), number_cards(read_file(df),greeting())))
     # stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df),greeting()))))
     # print(to_file(stock_prices(currency(top_transactions(number_cards(read_file(df), greeting()))))))
-    print(to_file(stock_prices(currency(top_transactions(read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting()))))))
+    print(
+        to_file(
+            stock_prices(
+                currency(
+                    top_transactions(
+                        read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting())
+                    )
+                )
+            )
+        )
+    )
     # print(to_file(stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df), greeting()))))))
