@@ -1,11 +1,11 @@
-import logging
 import unittest
 from datetime import datetime
 from unittest.mock import patch
 
 import pandas as pd
+import pytest
 
-from src.utils import greeting, read_file
+from src.utils import greeting, read_file, number_cards, top_transactions, currency, stock_prices
 
 
 class TestReadFile(unittest.TestCase):
@@ -73,7 +73,40 @@ class TestReadFile(unittest.TestCase):
         self.assertEqual(transactions, expected_transactions)
 
 
-#
-# if __name__ == "__main__":
-#     unittest.main()
-#     logging.basicConfig(level=logging.INFO)
+def test_get_greeting_night():
+    with pytest.raises(TypeError):
+        with patch("datetime.datetime.now") as mock_now:
+            mock_now.return_value = datetime(2023, 4, 1, 23, 0, 0)
+            assert greeting() == "Доброй ночи"
+
+
+def test_number_cards(trans):
+    assert number_cards(trans, {}) == {"cards": [{"last_digits": "7197", "total_spent": 131.6, "cashback": 1.316}]}
+
+
+def test_top_transactions(trans):
+    assert top_transactions(trans, {}) == {
+        "top_transactions": [
+            {"date": "2020-05-28 00:00:00", "amount": -86.6, "category": "Супермаркеты", "description": "Магнит"},
+            {"date": "2020-05-28 00:00:00", "amount": -45.0, "category": "Супермаркеты", "description": "Колхоз"},
+        ]
+    }
+
+
+@pytest.mark.parametrize(
+    "info, exit_currency",
+    [({}, {"currency_rates": [{"currency": "USD", "rate": 95.676332}, {"currency": "EUR", "rate": 104.753149}]})],
+)
+def test_currency(info, exit_currency):
+    assert currency(info) == exit_currency
+
+
+@pytest.mark.parametrize(
+    "input_stock, exit_stock",
+    [({},
+            {'stock_prices': [{'stock': 'S&P 500', 'price': 4500.5}, {'stock': 'Dow Jones', 'price': 34000.75}, {'stock': 'NASDAQ', 'price': 15000.25}]})],)
+
+def test_stock_prices(input_stock, exit_stock):
+    assert stock_prices(input_stock) == exit_stock
+
+

@@ -22,32 +22,36 @@ logger.addHandler(fileHandler)
 
 def read_file(file):
     transactions = []
-    headers = file.columns.tolist()
+    # headers = file.columns.tolist()
+    file["Номер карты"] = file["Номер карты"].fillna(False)
     try:
         logger.info("We have an adequate list of dictionaries")
         for index, row in file.iterrows():
             row_data = row.to_dict()
-            transactions.append(
-                {
-                    "Дата операции": row_data["Дата операции"],
-                    "Дата платежа": row_data["Дата платежа"],
-                    "Номер карты": row_data["Номер карты"],
-                    "Статус": row_data["Статус"],
-                    "Сумма операции": row_data["Сумма операции"],
-                    "Валюта операции": row_data["Валюта операции"],
-                    "Сумма платежа": row_data["Сумма платежа"],
-                    "Валюта платежа": row_data["Валюта платежа"],
-                    "Кэшбэк": row_data["Кэшбэк"],
-                    "Категория": row_data["Категория"],
-                    "MCC": row_data["MCC"],
-                    "Описание": row_data["Описание"],
-                    "Бонусы (включая кэшбэк)": row_data["Бонусы (включая кэшбэк)"],
-                    "Округление на инвесткопилку": row_data["Округление на инвесткопилку"],
-                    "Сумма операции с округлением": row_data["Сумма операции с округлением"],
-                }
-            )
+            if row_data["Номер карты"]:
+                transactions.append(
+                    {
+                        "Дата операции": row_data["Дата операции"],
+                        "Дата платежа": row_data["Дата платежа"],
+                        "Номер карты": row_data["Номер карты"],
+                        "Статус": row_data["Статус"],
+                        "Сумма операции": row_data["Сумма операции"],
+                        "Валюта операции": row_data["Валюта операции"],
+                        "Сумма платежа": row_data["Сумма платежа"],
+                        "Валюта платежа": row_data["Валюта платежа"],
+                        "Кэшбэк": row_data["Кэшбэк"],
+                        "Категория": row_data["Категория"],
+                        "MCC": row_data["MCC"],
+                        "Описание": row_data["Описание"],
+                        "Бонусы (включая кэшбэк)": row_data["Бонусы (включая кэшбэк)"],
+                        "Округление на инвесткопилку": row_data["Округление на инвесткопилку"],
+                        "Сумма операции с округлением": row_data["Сумма операции с округлением"],
+                    }
+                )
             if len(transactions) == 100:
                 break
+            else:
+                continue
         return transactions
     except Exception as e:
         logger.error("What do you want, bitch?!")
@@ -59,7 +63,6 @@ def greeting():
         logger.info("Say 'hello'")
         date = datetime.now()
         str_date = date.strftime("%Y-%m-%d %H:%M:%S")
-
         hour = str_date[11:13]
         info = {}
         if 4 <= int(hour) < 12:
@@ -73,7 +76,7 @@ def greeting():
             return info
         else:
             info["greeting"] = "Доброй ночи"
-            return info
+        return info
     except Exception as e:
         logger.error("You can`t say hello, bitch?!")
         print(f"We have a problem with a reading file, Watson: {e}")
@@ -84,7 +87,7 @@ def number_cards(trans, info):
         logger.info("Get numbers of cards ")
         info["cards"] = []
         for transaction in trans:
-            card_number = transaction.get('"Номер карты"')
+            card_number = transaction.get("Номер карты")
             if card_number is not None:
                 card_number_str = str(card_number)
                 if len(card_number_str) > 1:
@@ -102,7 +105,7 @@ def number_cards(trans, info):
                             card["cashback"] += cash_back
         return info
     except Exception as e:
-        logger.error("Fucking numbers oc cards")
+        logger.error("Fucking numbers of cards")
         print(f"We have a problem with getting of numbers card, Watson: {e}")
 
 
@@ -163,33 +166,39 @@ def currency(info):
 
 
 def stock_prices(info):
-    # try:
-    logger.info("Good stocks")
-    conn = http.client.HTTPSConnection("real-time-finance-data.p.rapidapi.com")
+    try:
+        # logger.info("Good stocks")
+        # conn = http.client.HTTPSConnection("real-time-finance-data.p.rapidapi.com")
+        #
+        # headers = {
+        #     "x-rapidapi-key": "39ac2ff51amshbf14c0ab2c03d5cp1bb809jsnc4631bcad964",
+        #     "x-rapidapi-host": "real-time-finance-data.p.rapidapi.com",
+        # }
+        #
+        # conn.request("GET", "/market-trends?trend_type=MARKET_INDEXES&country=us&language=en", headers=headers)
+        #
+        # res = conn.getresponse()
+        # data = res.read()
+        # data_json = json.loads(data.decode("utf-8"))
+        data_json = {
+            "data": {
+                "trends": [
+                    {"name": "S&P 500", "price": 4500.50},
+                    {"name": "Dow Jones", "price": 34000.75},
+                    {"name": "NASDAQ", "price": 15000.25},
+                ]
+            }
+        }
 
-    headers = {
-        "x-rapidapi-key": "39ac2ff51amshbf14c0ab2c03d5cp1bb809jsnc4631bcad964",
-        "x-rapidapi-host": "real-time-finance-data.p.rapidapi.com",
-    }
+        info["stock_prices"] = []
 
-    conn.request("GET", "/market-trends?trend_type=MARKET_INDEXES&country=us&language=en", headers=headers)
+        for trend in data_json["data"]["trends"]:
+            info["stock_prices"].append({"stock": trend["name"], "price": trend["price"]})
 
-    res = conn.getresponse()
-    data = res.read()
-    data_json = json.loads(data.decode("utf-8"))
-    print(data_json)
-
-    info["stock_prices"] = []
-
-    for trend in data_json["data"]["trends"]:
-        info["stock_prices"].append({"stock": trend["name"], "price": trend["price"]})
-
-    return info
-
-
-# except Exception as e:
-#     logger.error('Everybody has problems with foreign stocks.')
-#     print(f'We have a problem with stocks, Watson: {e}')
+        return info
+    except Exception as e:
+        logger.error('Everybody has problems with foreign stocks.')
+        print(f'We have a problem with stocks, Watson: {e}')
 
 
 def to_file(info):
