@@ -2,6 +2,7 @@ import pandas as pd
 import pytest
 
 from src.services import path_to_project
+from src.utils import path_to_file
 
 
 @pytest.fixture
@@ -54,3 +55,8 @@ def return_value_for_investment_bank():
 @pytest.fixture
 def return_to_file():
     return {'greeting': 'Доброе утро', 'cards': [{'last_digits': '7197', 'total_spent': 20412.800000000003, 'cashback': 204.12800000000001}, {'last_digits': '4556', 'total_spent': 1065.0, 'cashback': 10.65}]}
+
+@pytest.fixture
+def return_views_dataframe():
+    df = pd.read_excel(path_to_file)
+    return df

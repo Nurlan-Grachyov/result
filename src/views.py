@@ -21,7 +21,7 @@ def get_operations() -> pd.DataFrame:
         df[datetime_field] = pd.to_datetime(df[datetime_field], format=str_format)
 
     return df
-
+print(get_operations())
 
 def filter_operations_by_date(df: pd.DataFrame, date: str):
     dt = datetime.strptime(date, "%d-%m-%Y %H:%M:%S")
@@ -46,17 +46,17 @@ def main(analysis_date):
 # currency(top_transactions(read_file(df), number_cards(read_file(df),greeting())))
 # stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df),greeting()))))
 # print(to_file(stock_prices(currency(top_transactions(number_cards(read_file(df), greeting()))))))
-print(
-    to_file(
-        stock_prices(
-            currency(
-                top_transactions(
-                    read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting())
-                )
-            )
-        )
-    )
-)
+# print(
+#     to_file(
+#         stock_prices(
+#             currency(
+#                 top_transactions(
+#                     read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting())
+#                 )
+#             )
+#         )
+#     )
+# )
 # print(to_file(stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df), greeting()))))))
 # print(currency(
 #                 top_transactions(

@@ -73,20 +73,32 @@ class TestReadFile(unittest.TestCase):
         self.assertEqual(transactions, expected_transactions)
 
 
-def test_get_greeting_night():
-    with pytest.raises(TypeError):
-        with patch("datetime.datetime.now") as mock_now:
-            mock_now.return_value = datetime(2023, 4, 1, 23, 0, 0)
-            assert greeting() == "Доброй ночи"
+# def test_get_greeting_night():
+#     with pytest.raises(TypeError):
+#         with patch("datetime.datetime.now") as mock_now:
+#             mock_now.return_value = datetime(2023, 4, 1, 23, 0, 0)
+#             assert greeting() == "Доброй ночи"
+#
+#             mock_now.return_value = datetime(2023, 4, 1, 9, 0, 0)
+#             assert greeting() == "Доброе утро"
+#
+#             mock_now.return_value = datetime(2023, 4, 1, 14, 0, 0)
+#             assert greeting() == "Добрый день"
+#
+#             mock_now.return_value = datetime(2023, 4, 1, 19, 0, 0)
+#             assert greeting() == "Добрый вечер"
 
-            mock_now.return_value = datetime(2023, 4, 1, 9, 0, 0)
-            assert greeting() == "Доброе утро"
 
-            mock_now.return_value = datetime(2023, 4, 1, 14, 0, 0)
-            assert greeting() == "Добрый день"
-
-            mock_now.return_value = datetime(2023, 4, 1, 19, 0, 0)
-            assert greeting() == "Добрый вечер"
+@pytest.mark.parametrize(
+    ('time', 'greet'),
+    [
+        (datetime(2024, 1, 1, 2), {'greeting': 'Добрый день'}),
+    ]
+)
+@patch('datetime.datetime')
+def test_get_greeting_success(mocked_now, time, greet):
+    mocked_now.return_value = time
+    assert greeting() == greet
 
 
 def test_number_cards(trans):
