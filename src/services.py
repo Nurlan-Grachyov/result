@@ -42,38 +42,44 @@ try:
                 "Сумма операции с округлением": row_data["Сумма операции с округлением"],
             }
         )
-        if len(transactions) == 1500:
+        if len(transactions) == 10:
             break
 except Exception as e:
     logger.error(f"Ошибка с созданием списка словарей: {e}.")
     print(f"Ошибка с созданием списка словарей: {e}.")
 
-date_obj = datetime(2021, 5, 6)
+date_obj = datetime(2021, 5, 31)
 str_date = datetime.strftime(date_obj, "%Y-%m")
 
 
 def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: int) -> float:
+    """На вход принимаем месяц, транзакции, кратная сумма, до которой округляем. Каждая покупка округляется до кратной суммы
+    и падает в counter, возвращается counter"""
     try:
         logger.info("Кругленькая сумма получилась...")
         counter = 0
         for i in list_transactions:
             if i["Дата платежа"] is None:
+                counter += 0
                 continue
             date = datetime.strptime(i["Дата платежа"], "%d.%m.%Y")
             need_data = datetime.strftime(date, "%Y-%m")
             obj_date = datetime.strptime(need_data, "%Y-%m")
             obj_month = datetime.strptime(month, "%Y-%m")
             if obj_date == obj_month:
-                for i in list_transactions:
-                    payment = i["Сумма платежа"]
+                for dictionary in list_transactions:
+                    payment = dictionary["Сумма платежа"]
                     if payment < 0:
                         investment = round((int(payment)) // limit) * limit
                         counter += investment
                     else:
+                        counter += 0
                         continue
             else:
+                counter += 0
                 continue
-
+        if counter == 0:
+            return counter
         counter = str(counter)[1:]
         return float(counter)
     except Exception as e:

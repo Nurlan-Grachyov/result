@@ -21,6 +21,7 @@ logger.addHandler(fileHandler)
 
 
 def read_file(file):
+    """Читаем DataFrame, возвращаем список словарей"""
     transactions = []
     # headers = file.columns.tolist()
     file["Номер карты"] = file["Номер карты"].fillna(False)
@@ -59,6 +60,7 @@ def read_file(file):
 
 
 def greeting():
+    """Приветствуем пользователя в зависимости от времени суток, возвращаем словарь info с приветствием"""
     try:
         logger.info("Say 'hello'")
         date = datetime.now()
@@ -83,6 +85,7 @@ def greeting():
 
 
 def number_cards(trans, info):
+    """Получаем последние 4 цифры номера карты, добавляем в словарь info, возвращаем его же"""
     try:
         logger.info("Get numbers of cards ")
         info["cards"] = []
@@ -110,6 +113,7 @@ def number_cards(trans, info):
 
 
 def top_transactions(trans, info):
+    """Получаем отсортированные транзакции по убыванию, добавляем в словарь info"""
     try:
         logger.info("Oh, you are so rich...")
         top = sorted(trans, key=lambda x: x["Сумма операции"])[:5]
@@ -130,6 +134,7 @@ def top_transactions(trans, info):
 
 
 def currency(info):
+    """Подключаемся к API, получаем курсы валют USD и EUR в отношении рубля, добавляем в словарь info"""
     try:
         logger.info("Where do you have so much currency from?")
         # load_dotenv()
@@ -166,6 +171,7 @@ def currency(info):
 
 
 def stock_prices(info):
+    """Подключаемся к API, получаем наименование акции и ее цену, добавляем в словарь info"""
     try:
         # logger.info("Good stocks")
         # conn = http.client.HTTPSConnection("real-time-finance-data.p.rapidapi.com")
@@ -197,11 +203,12 @@ def stock_prices(info):
 
         return info
     except Exception as e:
-        logger.error('Everybody has problems with foreign stocks.')
-        print(f'We have a problem with stocks, Watson: {e}')
+        logger.error("Everybody has problems with foreign stocks.")
+        print(f"We have a problem with stocks, Watson: {e}")
 
 
 def to_file(info):
+    """Записываем словарь info в json файл, возвращаем словарь info в PYTHON виде"""
     try:
         logger.info("Write to file")
         if info is None:

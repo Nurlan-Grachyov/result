@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 
-from src.utils import greeting, read_file, number_cards, top_transactions, currency, stock_prices
+from src.utils import currency, greeting, number_cards, read_file, stock_prices, top_transactions
 
 
 class TestReadFile(unittest.TestCase):
@@ -79,6 +79,15 @@ def test_get_greeting_night():
             mock_now.return_value = datetime(2023, 4, 1, 23, 0, 0)
             assert greeting() == "Доброй ночи"
 
+            mock_now.return_value = datetime(2023, 4, 1, 9, 0, 0)
+            assert greeting() == "Доброе утро"
+
+            mock_now.return_value = datetime(2023, 4, 1, 14, 0, 0)
+            assert greeting() == "Добрый день"
+
+            mock_now.return_value = datetime(2023, 4, 1, 19, 0, 0)
+            assert greeting() == "Добрый вечер"
+
 
 def test_number_cards(trans):
     assert number_cards(trans, {}) == {"cards": [{"last_digits": "7197", "total_spent": 131.6, "cashback": 1.316}]}
@@ -103,10 +112,18 @@ def test_currency(info, exit_currency):
 
 @pytest.mark.parametrize(
     "input_stock, exit_stock",
-    [({},
-            {'stock_prices': [{'stock': 'S&P 500', 'price': 4500.5}, {'stock': 'Dow Jones', 'price': 34000.75}, {'stock': 'NASDAQ', 'price': 15000.25}]})],)
-
+    [
+        (
+            {},
+            {
+                "stock_prices": [
+                    {"stock": "S&P 500", "price": 4500.5},
+                    {"stock": "Dow Jones", "price": 34000.75},
+                    {"stock": "NASDAQ", "price": 15000.25},
+                ]
+            },
+        )
+    ],
+)
 def test_stock_prices(input_stock, exit_stock):
     assert stock_prices(input_stock) == exit_stock
-
-

@@ -15,6 +15,8 @@ path_to_json_2 = path_to_project / "data" / "spending_by_weekday_2.json"
 
 date_obj = datetime(2021, 5, 6)
 str_date = datetime.strftime(date_obj, "%d.%m.%Y")
+
+
 def my_decorator(func):
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
@@ -40,6 +42,7 @@ def decorator_with_args(file):
 
 @decorator_with_args(path_to_json_2)
 def spending_by_weekday(file, date="14.10.2022"):
+    """Функция возвращает средние траты в каждый из дней недели за последние три месяца (от переданной даты)"""
     transactions = []
     to_date = datetime.strptime(date, "%d.%m.%Y")
     from_date = to_date - relativedelta(months=3)

@@ -1,6 +1,6 @@
-from src.reports import spending_by_weekday, df_file
+from src.reports import df_file, spending_by_weekday
 from src.services import investment_bank, str_date, transactions
-from src.utils import to_file, stock_prices, currency, top_transactions, read_file, number_cards, greeting
+from src.utils import currency, greeting, number_cards, read_file, stock_prices, to_file, top_transactions
 from src.views import main, str_begin_date
 
 # print(
