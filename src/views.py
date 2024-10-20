@@ -36,7 +36,7 @@ def main(analysis_date):
     return df
 
 
-main(str_begin_date)
+# main(str_begin_date)
 
 # if __name__ == "__main__":
 # print(read_file(main(str_begin_date)))
@@ -46,17 +46,17 @@ main(str_begin_date)
 # currency(top_transactions(read_file(df), number_cards(read_file(df),greeting())))
 # stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df),greeting()))))
 # print(to_file(stock_prices(currency(top_transactions(number_cards(read_file(df), greeting()))))))
-# print(
-#     to_file(
-#         stock_prices(
-#             currency(
-#                 top_transactions(
-#                     read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting())
-#                 )
-#             )
-#         )
-#     )
-# )
+print(
+    to_file(
+        stock_prices(
+            currency(
+                top_transactions(
+                    read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting())
+                )
+            )
+        )
+    )
+)
 # print(to_file(stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df), greeting()))))))
 # print(currency(
 #                 top_transactions(

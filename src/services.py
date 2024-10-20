@@ -15,6 +15,9 @@ fileFormatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s: %(message
 fileHandler.setFormatter(fileFormatter)
 logger.addHandler(fileHandler)
 
+date_obj = datetime(2021, 5, 31)
+str_date_service = datetime.strftime(date_obj, "%Y-%m")
+
 workbook = openpyxl.load_workbook(path_to_file)
 sheet = workbook.active
 headers = [cell.value for cell in sheet[1]]
@@ -42,14 +45,12 @@ try:
                 "Сумма операции с округлением": row_data["Сумма операции с округлением"],
             }
         )
-        if len(transactions) == 10:
+        if len(transactions) == 1500:
             break
 except Exception as e:
     logger.error(f"Ошибка с созданием списка словарей: {e}.")
     print(f"Ошибка с созданием списка словарей: {e}.")
 
-date_obj = datetime(2021, 5, 31)
-str_date = datetime.strftime(date_obj, "%Y-%m")
 
 
 def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: int) -> float:
@@ -88,4 +89,4 @@ def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: 
 
 
 if __name__ == "__main__":
-    print(investment_bank(str_date, transactions, 50))
+    print(investment_bank(str_date_service, transactions, 50))

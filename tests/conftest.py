@@ -1,4 +1,7 @@
+import pandas as pd
 import pytest
+
+from src.services import path_to_project
 
 
 @pytest.fixture
@@ -47,3 +50,7 @@ def trans_for_services():
 @pytest.fixture
 def return_value_for_investment_bank():
     return {"Thursday": -2774.18, "Wednesday": -1429.55, "Tuesday": -291.35, "Monday": -1404.81, "Sunday": -1373.39, "Saturday": -334.0, "Friday": -732.67}
+
+@pytest.fixture
+def return_to_file():
+    return {'greeting': 'Доброе утро', 'cards': [{'last_digits': '7197', 'total_spent': 20412.800000000003, 'cashback': 204.12800000000001}, {'last_digits': '4556', 'total_spent': 1065.0, 'cashback': 10.65}]}

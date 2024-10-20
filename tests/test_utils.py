@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 
-from src.utils import currency, greeting, number_cards, read_file, stock_prices, top_transactions
+from src.utils import currency, greeting, number_cards, read_file, stock_prices, top_transactions, to_file
 
 
 class TestReadFile(unittest.TestCase):
@@ -127,3 +127,6 @@ def test_currency(info, exit_currency):
 )
 def test_stock_prices(input_stock, exit_stock):
     assert stock_prices(input_stock) == exit_stock
+
+def test_to_file(return_to_file):
+    assert to_file(return_to_file) == return_to_file
