@@ -52,7 +52,6 @@ except Exception as e:
     print(f"Ошибка с созданием списка словарей: {e}.")
 
 
-
 def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: int) -> float:
     """На вход принимаем месяц, транзакции, кратная сумма, до которой округляем. Каждая покупка округляется до кратной суммы
     и падает в counter, возвращается counter"""

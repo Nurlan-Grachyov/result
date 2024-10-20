@@ -4,16 +4,16 @@ from src.utils import currency, greeting, number_cards, read_file, stock_prices,
 from src.views import main, str_begin_date
 
 print(
-        to_file(
-            stock_prices(
-                currency(
-                    top_transactions(
-                        read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting())
-                    )
+    to_file(
+        stock_prices(
+            currency(
+                top_transactions(
+                    read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting())
                 )
             )
         )
     )
+)
 
 print(investment_bank(str_date_service, transactions, 50))
 

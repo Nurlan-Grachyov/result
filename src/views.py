@@ -21,7 +21,7 @@ def get_operations() -> pd.DataFrame:
         df[datetime_field] = pd.to_datetime(df[datetime_field], format=str_format)
 
     return df
-print(get_operations())
+
 
 def filter_operations_by_date(df: pd.DataFrame, date: str):
     dt = datetime.strptime(date, "%d-%m-%Y %H:%M:%S")
@@ -30,13 +30,13 @@ def filter_operations_by_date(df: pd.DataFrame, date: str):
     return df.loc[(df["Дата операции"] >= start_date) & (df["Дата операции"] < end_date)]
 
 
+
 def main(analysis_date):
     df = get_operations()
     df = filter_operations_by_date(df, analysis_date)
     return df
 
-
-# main(str_begin_date)
+print(main('20-05-2020 13:26:36'))
 
 # if __name__ == "__main__":
 # print(read_file(main(str_begin_date)))

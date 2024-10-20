@@ -35,6 +35,7 @@ def my_decorator(func):
         except Exception as e:
             print(f"Не получилось записать информацию в файл 'spending_by_weekday.json': {e}")
             logger.error(f"Не получилось записать информацию в файл 'spending_by_weekday.json': {e}")
+
     return wrapper
 
 
@@ -50,6 +51,7 @@ def decorator_with_args(file):
             except Exception as e:
                 print(f"Не получилось записать информацию в файл 'spending_by_weekday_2.json': {e}")
                 logger.error(f"Не получилось записать информацию в файл 'spending_by_weekday_2.json': {e}")
+
         return wrapper
 
     return my_big_decorator
