@@ -2,7 +2,7 @@ import json
 
 import pandas as pd
 
-from src.reports import spending_by_weekday, my_decorator, path_to_json, path_to_json_2, decorator_with_args
+from src.reports import decorator_with_args, my_decorator, path_to_json, path_to_json_2, spending_by_weekday
 from src.services import path_to_project
 
 

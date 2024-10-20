@@ -1,9 +1,6 @@
 import pandas as pd
 import pytest
 
-from src.services import path_to_project
-from src.utils import path_to_file
-
 
 @pytest.fixture
 def trans():
@@ -270,6 +267,7 @@ def input_filter_operations_by_date_df():
     df_data = pd.DataFrame(data)
     return df_data
 
+
 @pytest.fixture
 def return_time_for_main():
-    return '20-05-2020 13:26:36'
+    return "20-05-2020 13:26:36"

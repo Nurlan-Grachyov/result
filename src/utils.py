@@ -1,13 +1,13 @@
-import http.client
+# import http.client
 import json
 import logging
-import os
+# import os
 from datetime import datetime
 from pathlib import Path
 
-import openpyxl
-import requests
-from dotenv import load_dotenv
+# import openpyxl
+# import requests
+# from dotenv import load_dotenv
 
 path_to_project = Path(__file__).resolve().parent.parent
 path_to_file = path_to_project / "data" / "operations.xlsx"

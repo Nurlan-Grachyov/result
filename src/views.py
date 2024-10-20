@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
-from src.utils import currency, greeting, number_cards, read_file, stock_prices, to_file, top_transactions
-from src.utils import path_to_file
+from src.utils import (currency, greeting, number_cards, path_to_file, read_file, stock_prices, to_file,
+                       top_transactions)
 
 begin_date = datetime(2020, 5, 25, 15, 46, 57)
 str_begin_date = datetime.strftime(begin_date, "%d-%m-%Y %H:%M:%S")
@@ -30,37 +30,23 @@ def filter_operations_by_date(df: pd.DataFrame, date: str):
     return df.loc[(df["Дата операции"] >= start_date) & (df["Дата операции"] < end_date)]
 
 
-
 def main(analysis_date):
     df = get_operations()
     df = filter_operations_by_date(df, analysis_date)
     return df
 
-print(main('20-05-2020 13:26:36'))
 
-# if __name__ == "__main__":
-# print(read_file(main(str_begin_date)))
-# greeting()
-# print(number_cards(read_file(main(str_begin_date)), greeting()))
-# top_transactions(read_file(df), number_cards(read_file(df),greeting()))
-# currency(top_transactions(read_file(df), number_cards(read_file(df),greeting())))
-# stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df),greeting()))))
-# print(to_file(stock_prices(currency(top_transactions(number_cards(read_file(df), greeting()))))))
-# print(
-#     to_file(
-#         stock_prices(
-#             currency(
-#                 top_transactions(
-#                     read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting())
-#                 )
-#             )
-#         )
-#     )
-# )
-# print(to_file(stock_prices(currency(top_transactions(read_file(df), number_cards(read_file(df), greeting()))))))
-# print(currency(
-#                 top_transactions(
-#                     read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting())
-#                 )
-#             )
-#         )
+print(main("20-05-2020 13:26:36"))
+
+if __name__ == "__main__":
+    print(
+        to_file(
+            stock_prices(
+                currency(
+                    top_transactions(
+                        read_file(main(str_begin_date)), number_cards(read_file(main(str_begin_date)), greeting())
+                    )
+                )
+            )
+        )
+    )

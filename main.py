@@ -1,5 +1,5 @@
 from src.reports import df_file, spending_by_weekday, str_date_report
-from src.services import investment_bank, transactions, str_date_service
+from src.services import investment_bank, str_date_service, transactions
 from src.utils import currency, greeting, number_cards, read_file, stock_prices, to_file, top_transactions
 from src.views import main, str_begin_date
 

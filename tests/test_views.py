@@ -1,9 +1,8 @@
-import unittest
 from unittest.mock import patch
 
 import pandas as pd
 
-from src.views import get_operations, filter_operations_by_date, main
+from src.views import filter_operations_by_date, get_operations
 
 
 @patch("src.views.pd.read_excel")
@@ -32,81 +31,23 @@ def test_get_operations(mock_excel):
     mock_excel.return_value = pd.DataFrame(data)
     result = get_operations()
 
-    pd.testing.assert_frame_equal(result,mock_excel.return_value)
+    pd.testing.assert_frame_equal(result, mock_excel.return_value)
 
 
+def test_filter_operations_by_date():
+    initial_data = [
+        pd.Timestamp("2024-09-01 10:00:00"),
+        pd.Timestamp("2024-10-01 10:00:00"),
+        pd.Timestamp("2024-10-02 10:00:00"),
+        pd.Timestamp("2024-10-03 10:00:00"),
+    ]
+    df = pd.DataFrame({"Дата операции": initial_data})
 
-# def setup():
-#         data = [{
-#             "Дата операции": "26.05.2020 13:29:09",
-#             "Дата платежа": "28.05.2020"},
-#             {
-#             "Дата операции": "26.05.2020 13:23:32",
-#             "Дата платежа": "28.05.2020"
-#             }]
-#         df = pd.DataFrame(data)
-#         return df
+    filtered_df = filter_operations_by_date(df, "02-10-2024 00:00:00")
 
-# def test_filter_operations_by_valid_date():
-#         date = "26-05-2026 00:00:00"
-#         filtered_df = filter_operations_by_date(setup(), date)
-#
-#         expected_data = [{
-#             "Дата операции": "26.05.2020 13:29:09",
-#             "Дата платежа": "28.05.2020"},
-#             {
-#             "Дата операции": "26.05.2020 13:23:32",
-#             "Дата платежа": "28.05.2020"
-#             }]
-#         expected_df = pd.DataFrame(expected_data)
-#
-#         pd.testing.assert_frame_equal(filtered_df, expected_df)
-#
-#
-# def test_main(return_time_for_main):
-#     data = 'test'
-#     excel_data = pd.DataFrame(data)
-#     mock_read_excel.return_value = pd.DataFrame(data)
-#     assert main(return_time_for_main) == excel_data
-
-
-@patch.object(pd, 'read_excel')
-def test_filter_operations_by_date(mock_read_excel):
-    date = "26-05-2026 00:00:00"
-    data = [{
-            "Дата операции": "26.05.2020 13:29:09",
-            "Дата платежа": "28.05.2020"},
-            {
-            "Дата операции": "26.05.2020 13:23:32",
-            "Дата платежа": "28.05.2020"
-            }]
-    mock_read_excel.return_value = pd.DataFrame(data)
-    assert filter_operations_by_date(mock_read_excel.return_value, date) == [{
-            "Дата операции": "26.05.2020 13:29:09",
-            "Дата платежа": "28.05.2020"},
-            {
-            "Дата операции": "26.05.2020 13:23:32",
-            "Дата платежа": "28.05.2020"
-            }]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    expected_data = [
+        pd.Timestamp("2024-10-01 10:00:00"),
+        pd.Timestamp("2024-10-02 10:00:00"),
+    ]
+    expected_df = pd.DataFrame({"Дата операции": expected_data})
+    pd.testing.assert_frame_equal(filtered_df.reset_index(drop=True), expected_df.reset_index(drop=True))

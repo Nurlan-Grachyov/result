@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 
-from src.utils import currency, greeting, number_cards, read_file, stock_prices, top_transactions, to_file
+from src.utils import currency, greeting, number_cards, read_file, stock_prices, to_file, top_transactions
 
 
 class TestReadFile(unittest.TestCase):
