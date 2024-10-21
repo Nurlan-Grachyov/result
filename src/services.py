@@ -15,8 +15,10 @@ fileFormatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s: %(message
 fileHandler.setFormatter(fileFormatter)
 logger.addHandler(fileHandler)
 
+
 date_obj = datetime(2021, 5, 31)
 str_date_service = datetime.strftime(date_obj, "%Y-%m")
+
 
 workbook = openpyxl.load_workbook(path_to_file)
 sheet = workbook.active

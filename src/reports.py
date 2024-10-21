@@ -20,6 +20,7 @@ fileFormatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s: %(message
 fileHandler.setFormatter(fileFormatter)
 logger.addHandler(fileHandler)
 
+
 date_obj = datetime(2021, 5, 6)
 str_date_report = datetime.strftime(date_obj, "%d.%m.%Y")
 
@@ -93,5 +94,4 @@ def spending_by_weekday(file, date="14.10.2022"):
 
 
 if __name__ == "__main__":
-    print(str_date_report)
     print(spending_by_weekday(df_file, str_date_report))

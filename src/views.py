@@ -36,8 +36,6 @@ def main(analysis_date):
     return df
 
 
-print(main("20-05-2020 13:26:36"))
-
 if __name__ == "__main__":
     print(
         to_file(
