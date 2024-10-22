@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-import pandas as pd
+from pandas import Timestamp
 
 # import openpyxl
 # import requests
@@ -241,7 +241,7 @@ def to_file(info):
             if isinstance(value, list):
                 for item in value:
                     for k, v in item.items():
-                        if isinstance(v, pd.Timestamp):
+                        if isinstance(v, Timestamp):
                             item[k] = v.isoformat()
 
         json_info = json.dumps(info, ensure_ascii=False)
