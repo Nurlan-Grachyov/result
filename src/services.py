@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -54,7 +55,7 @@ except Exception as e:
     print(f"Ошибка с созданием списка словарей: {e}.")
 
 
-def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: int) -> float:
+def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: int):
     """На вход принимаем месяц, транзакции, кратная сумма, до которой округляем.
     Каждая покупка округляется до кратной суммы
     и падает в counter, возвращается counter"""
@@ -84,7 +85,8 @@ def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: 
         if counter == 0:
             return counter
         counter = str(counter)[1:]
-        return float(counter)
+        json_counter = json.dumps(float(counter), ensure_ascii=False)
+        return json_counter
     except Exception as e:
         logger.error(f"Ничего ты не сэкономил: {e}.")
         print(f"Ничего ты не сэкономил: {e}.")

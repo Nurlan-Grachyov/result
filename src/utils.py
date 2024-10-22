@@ -1,9 +1,12 @@
 # import http.client
 import json
 import logging
+
 # import os
 from datetime import datetime
 from pathlib import Path
+
+import pandas as pd
 
 # import openpyxl
 # import requests
@@ -138,9 +141,9 @@ def currency(info):
     try:
         logger.info("Where do you have so much currency from?")
         # load_dotenv()
-        # access_key = os.getenv("access_key")
+        # access_key_curr = os.getenv("access_key_curr")
         #
-        # headers_curr = {"apikey": access_key}
+        # headers_curr = {"apikey": access_key_curr}
         # url_usd = f"https://api.apilayer.com/exchangerates_data/latest?symbols=RUB&base=USD"
         #
         # result_usd = requests.get(url_usd, headers=headers_curr)
@@ -173,11 +176,13 @@ def currency(info):
 def stock_prices(info):
     """Подключаемся к API, получаем наименование акции и ее цену, добавляем в словарь info"""
     try:
-        # logger.info("Good stocks")
+        logger.info("Good stocks")
+        # load_dotenv()
+        # access_key_stock = os.getenv("access_key_stock")
         # conn = http.client.HTTPSConnection("real-time-finance-data.p.rapidapi.com")
         #
         # headers = {
-        #     "x-rapidapi-key": "39ac2ff51amshbf14c0ab2c03d5cp1bb809jsnc4631bcad964",
+        #     "x-rapidapi-key": access_key_stock,
         #     "x-rapidapi-host": "real-time-finance-data.p.rapidapi.com",
         # }
         #
@@ -232,7 +237,16 @@ def to_file(info):
         with open(path_to_file, "w", encoding="UTF-8") as f:
             json.dump(info_to_file, f, ensure_ascii=False)
 
-        return info
+        for key, value in info.items():
+            if isinstance(value, list):
+                for item in value:
+                    for k, v in item.items():
+                        if isinstance(v, pd.Timestamp):
+                            item[k] = v.isoformat()
+
+        json_info = json.dumps(info, ensure_ascii=False)
+
+        return json_info
     except Exception as e:
         logger.error("Problems with recording to file.")
         print(f"We have a problem with recording to file, Watson: {e}")

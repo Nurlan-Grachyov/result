@@ -2,11 +2,19 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
-from src.utils import (currency, greeting, number_cards, path_to_file, read_file, stock_prices, to_file,
-                       top_transactions)
+from src.utils import (
+    currency,
+    greeting,
+    number_cards,
+    path_to_file,
+    read_file,
+    stock_prices,
+    to_file,
+    top_transactions,
+)
 
 begin_date = datetime(2020, 5, 25, 15, 46, 57)
-str_begin_date = datetime.strftime(begin_date, "%d-%m-%Y %H:%M:%S")
+str_begin_date = datetime.strftime(begin_date, "%Y-%m-%d %H:%M:%S")
 
 
 def get_operations() -> pd.DataFrame:
@@ -33,8 +41,10 @@ def filter_operations_by_date(df: pd.DataFrame, date: str):
 
 def main(analysis_date):
     """Получаем транзакции из Excel файла, фильтрованные по дате"""
+    object_date = datetime.strptime(analysis_date, "%Y-%m-%d %H:%M:%S")
+    new_analysis_date = datetime.strftime(object_date, "%d-%m-%Y %H:%M:%S")
     df = get_operations()
-    df = filter_operations_by_date(df, analysis_date)
+    df = filter_operations_by_date(df, new_analysis_date)
     return df
 
 
