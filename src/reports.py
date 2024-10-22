@@ -58,7 +58,7 @@ def decorator_with_args(file):
     return my_big_decorator
 
 
-# @decorator_with_args(path_to_json_2)
+@decorator_with_args(path_to_json_2)
 def spending_by_weekday(file, date="14.10.2022"):
     """Функция возвращает средние траты в каждый из дней недели за последние три месяца (от переданной даты)"""
     try:

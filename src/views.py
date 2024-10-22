@@ -10,7 +10,7 @@ str_begin_date = datetime.strftime(begin_date, "%d-%m-%Y %H:%M:%S")
 
 
 def get_operations() -> pd.DataFrame:
-
+    """Читаем файл Excel"""
     df = pd.read_excel(path_to_file)
 
     datetime_fields_to_convert = {
@@ -24,6 +24,7 @@ def get_operations() -> pd.DataFrame:
 
 
 def filter_operations_by_date(df: pd.DataFrame, date: str):
+    """Фильтрация транзакций по дате"""
     dt = datetime.strptime(date, "%d-%m-%Y %H:%M:%S")
     start_date = pd.to_datetime(dt.replace(day=1))
     end_date = pd.to_datetime(dt + timedelta(days=1))
@@ -31,6 +32,7 @@ def filter_operations_by_date(df: pd.DataFrame, date: str):
 
 
 def main(analysis_date):
+    """Получаем транзакции из Excel файла, фильтрованные по дате"""
     df = get_operations()
     df = filter_operations_by_date(df, analysis_date)
     return df
