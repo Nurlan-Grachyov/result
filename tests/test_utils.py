@@ -1,3 +1,4 @@
+import json
 import unittest
 from datetime import datetime
 from unittest.mock import patch
@@ -128,5 +129,5 @@ def test_stock_prices(input_stock, exit_stock):
     assert stock_prices(input_stock) == exit_stock
 
 
-def test_to_file(return_to_file):
-    assert to_file(return_to_file) == return_to_file
+def test_to_file(input_to_file, return_to_file):
+    assert to_file(input_to_file) == json.dumps(return_to_file, ensure_ascii=False)

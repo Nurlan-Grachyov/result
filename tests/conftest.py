@@ -1,5 +1,6 @@
 import pandas as pd
 import pytest
+from pandas import Timestamp
 
 
 @pytest.fixture
@@ -231,15 +232,22 @@ def return_value_for_investment_bank():
     }
 
 
+# @pytest.fixture
+# def return_to_file():
+#     return {
+#         "greeting": "Доброе утро",
+#         "cards": [
+#             {"last_digits": "7197", "total_spent": 20412.800000000003, "cashback": 204.12800000000001},
+#             {"last_digits": "4556", "total_spent": 1065.0, "cashback": 10.65},
+#         ],
+#     }
+@pytest.fixture
+def input_to_file():
+    return {'greeting': 'Доброй ночи', 'cards': [{'last_digits': '7197', 'total_spent': 20412.800000000003, 'cashback': 204.12800000000001}, {'last_digits': '4556', 'total_spent': 1065.0, 'cashback': 10.65}], 'top_transactions': [{'date': Timestamp('2020-05-02 00:00:00'), 'amount': -9564.76, 'category': 'Другое', 'description': 'ГУП ВЦКП ЖХ'}, {'date': Timestamp('2020-05-23 00:00:00'), 'amount': -1851.0, 'category': 'Различные товары', 'description': 'МаксидоМ'}, {'date': Timestamp('2020-05-18 00:00:00'), 'amount': -815.0, 'category': 'Книги', 'description': 'Буквоед'}, {'date': Timestamp('2020-05-27 00:00:00'), 'amount': -572.0, 'category': 'Транспорт', 'description': 'Яндекс Такси'}, {'date': Timestamp('2020-05-13 00:00:00'), 'amount': -484.0, 'category': 'Различные товары', 'description': 'Улыбка радуги'}], 'currency_rates': [{'currency': 'USD', 'rate': 95.676332}, {'currency': 'EUR', 'rate': 104.753149}], 'stock_prices': [{'stock': 'S&P 500', 'price': 4500.5}, {'stock': 'Dow Jones', 'price': 34000.75}, {'stock': 'NASDAQ', 'price': 15000.25}]}
+
 @pytest.fixture
 def return_to_file():
-    return {
-        "greeting": "Доброе утро",
-        "cards": [
-            {"last_digits": "7197", "total_spent": 20412.800000000003, "cashback": 204.12800000000001},
-            {"last_digits": "4556", "total_spent": 1065.0, "cashback": 10.65},
-        ],
-    }
+    return {"greeting": "Доброй ночи", "cards": [{"last_digits": "7197", "total_spent": 20412.800000000003, "cashback": 204.12800000000001}, {"last_digits": "4556", "total_spent": 1065.0, "cashback": 10.65}], "top_transactions": [{"date": "2020-05-02T00:00:00", "amount": -9564.76, "category": "Другое", "description": "ГУП ВЦКП ЖХ"}, {"date": "2020-05-23T00:00:00", "amount": -1851.0, "category": "Различные товары", "description": "МаксидоМ"}, {"date": "2020-05-18T00:00:00", "amount": -815.0, "category": "Книги", "description": "Буквоед"}, {"date": "2020-05-27T00:00:00", "amount": -572.0, "category": "Транспорт", "description": "Яндекс Такси"}, {"date": "2020-05-13T00:00:00", "amount": -484.0, "category": "Различные товары", "description": "Улыбка радуги"}], "currency_rates": [{"currency": "USD", "rate": 95.676332}, {"currency": "EUR", "rate": 104.753149}], "stock_prices": [{"stock": "S&P 500", "price": 4500.5}, {"stock": "Dow Jones", "price": 34000.75}, {"stock": "NASDAQ", "price": 15000.25}]}
 
 
 @pytest.fixture

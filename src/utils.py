@@ -205,7 +205,7 @@ def stock_prices(info):
 
         for trend in data_json["data"]["trends"]:
             info["stock_prices"].append({"stock": trend["name"], "price": trend["price"]})
-
+        # print(info)
         return info
     except Exception as e:
         logger.error("Everybody has problems with foreign stocks.")
