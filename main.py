@@ -16,6 +16,6 @@ if __name__ == "__main__":
         )
     )
 
-    # print(investment_bank(str_date_service, transactions, 50))
-    #
-    # print(spending_by_weekday(df_file, str_date_report))
+    print(investment_bank(str_date_service, transactions, 50))
+
+    print(spending_by_weekday(df_file, str_date_report))
