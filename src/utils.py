@@ -1,13 +1,16 @@
-import http.client
+# import http.client
 import json
 import logging
-import os
+
+# import os
 from datetime import datetime
 from pathlib import Path
 
-import openpyxl
-import requests
-from dotenv import load_dotenv
+from pandas import Timestamp
+
+# import openpyxl
+# import requests
+# from dotenv import load_dotenv
 
 path_to_project = Path(__file__).resolve().parent.parent
 path_to_file = path_to_project / "data" / "operations.xlsx"
@@ -21,6 +24,7 @@ logger.addHandler(fileHandler)
 
 
 def read_file(file):
+    """Читаем DataFrame, возвращаем список словарей"""
     transactions = []
     # headers = file.columns.tolist()
     file["Номер карты"] = file["Номер карты"].fillna(False)
@@ -59,6 +63,7 @@ def read_file(file):
 
 
 def greeting():
+    """Приветствуем пользователя в зависимости от времени суток, возвращаем словарь info с приветствием"""
     try:
         logger.info("Say 'hello'")
         date = datetime.now()
@@ -83,6 +88,7 @@ def greeting():
 
 
 def number_cards(trans, info):
+    """Получаем последние 4 цифры номера карты, добавляем в словарь info, возвращаем его же"""
     try:
         logger.info("Get numbers of cards ")
         info["cards"] = []
@@ -110,6 +116,7 @@ def number_cards(trans, info):
 
 
 def top_transactions(trans, info):
+    """Получаем отсортированные транзакции по убыванию, добавляем в словарь info"""
     try:
         logger.info("Oh, you are so rich...")
         top = sorted(trans, key=lambda x: x["Сумма операции"])[:5]
@@ -130,12 +137,13 @@ def top_transactions(trans, info):
 
 
 def currency(info):
+    """Подключаемся к API, получаем курсы валют USD и EUR в отношении рубля, добавляем в словарь info"""
     try:
         logger.info("Where do you have so much currency from?")
         # load_dotenv()
-        # access_key = os.getenv("access_key")
+        # access_key_curr = os.getenv("access_key_curr")
         #
-        # headers_curr = {"apikey": access_key}
+        # headers_curr = {"apikey": access_key_curr}
         # url_usd = f"https://api.apilayer.com/exchangerates_data/latest?symbols=RUB&base=USD"
         #
         # result_usd = requests.get(url_usd, headers=headers_curr)
@@ -166,12 +174,15 @@ def currency(info):
 
 
 def stock_prices(info):
+    """Подключаемся к API, получаем наименование акции и ее цену, добавляем в словарь info"""
     try:
-        # logger.info("Good stocks")
+        logger.info("Good stocks")
+        # load_dotenv()
+        # access_key_stock = os.getenv("access_key_stock")
         # conn = http.client.HTTPSConnection("real-time-finance-data.p.rapidapi.com")
         #
         # headers = {
-        #     "x-rapidapi-key": "39ac2ff51amshbf14c0ab2c03d5cp1bb809jsnc4631bcad964",
+        #     "x-rapidapi-key": access_key_stock,
         #     "x-rapidapi-host": "real-time-finance-data.p.rapidapi.com",
         # }
         #
@@ -194,14 +205,14 @@ def stock_prices(info):
 
         for trend in data_json["data"]["trends"]:
             info["stock_prices"].append({"stock": trend["name"], "price": trend["price"]})
-
         return info
     except Exception as e:
-        logger.error('Everybody has problems with foreign stocks.')
-        print(f'We have a problem with stocks, Watson: {e}')
+        logger.error("Everybody has problems with foreign stocks.")
+        print(f"We have a problem with stocks, Watson: {e}")
 
 
 def to_file(info):
+    """Записываем словарь info в json файл, возвращаем словарь info в PYTHON виде"""
     try:
         logger.info("Write to file")
         if info is None:
@@ -225,7 +236,16 @@ def to_file(info):
         with open(path_to_file, "w", encoding="UTF-8") as f:
             json.dump(info_to_file, f, ensure_ascii=False)
 
-        return info
+        for key, value in info.items():
+            if isinstance(value, list):
+                for item in value:
+                    for k, v in item.items():
+                        if isinstance(v, Timestamp):
+                            item[k] = v.isoformat()
+
+        json_info = json.dumps(info, ensure_ascii=False)
+
+        return json_info
     except Exception as e:
         logger.error("Problems with recording to file.")
         print(f"We have a problem with recording to file, Watson: {e}")

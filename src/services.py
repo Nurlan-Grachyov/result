@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -14,6 +15,11 @@ fileHandler = logging.FileHandler(path_to_project / "logs" / "services.log", enc
 fileFormatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s: %(message)s")
 fileHandler.setFormatter(fileFormatter)
 logger.addHandler(fileHandler)
+
+
+date_obj = datetime(2021, 5, 31)
+str_date_service = datetime.strftime(date_obj, "%Y-%m")
+
 
 workbook = openpyxl.load_workbook(path_to_file)
 sheet = workbook.active
@@ -48,38 +54,43 @@ except Exception as e:
     logger.error(f"Ошибка с созданием списка словарей: {e}.")
     print(f"Ошибка с созданием списка словарей: {e}.")
 
-date_obj = datetime(2021, 5, 6)
-str_date = datetime.strftime(date_obj, "%Y-%m")
 
-
-def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: int) -> float:
+def investment_bank(month: str, list_transactions: List[Dict[str, Any]], limit: int):
+    """На вход принимаем месяц, транзакции, кратная сумма, до которой округляем.
+    Каждая покупка округляется до кратной суммы
+    и падает в counter, возвращается counter"""
     try:
         logger.info("Кругленькая сумма получилась...")
         counter = 0
         for i in list_transactions:
             if i["Дата платежа"] is None:
+                counter += 0
                 continue
             date = datetime.strptime(i["Дата платежа"], "%d.%m.%Y")
             need_data = datetime.strftime(date, "%Y-%m")
             obj_date = datetime.strptime(need_data, "%Y-%m")
             obj_month = datetime.strptime(month, "%Y-%m")
             if obj_date == obj_month:
-                for i in list_transactions:
-                    payment = i["Сумма платежа"]
+                for dictionary in list_transactions:
+                    payment = dictionary["Сумма платежа"]
                     if payment < 0:
                         investment = round((int(payment)) // limit) * limit
                         counter += investment
                     else:
+                        counter += 0
                         continue
             else:
+                counter += 0
                 continue
-
+        if counter == 0:
+            return counter
         counter = str(counter)[1:]
-        return float(counter)
+        json_counter = json.dumps(float(counter), ensure_ascii=False)
+        return json_counter
     except Exception as e:
         logger.error(f"Ничего ты не сэкономил: {e}.")
         print(f"Ничего ты не сэкономил: {e}.")
 
 
 if __name__ == "__main__":
-    print(investment_bank(str_date, transactions, 50))
+    print(investment_bank(str_date_service, transactions, 50))
